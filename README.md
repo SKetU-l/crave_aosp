@@ -15,6 +15,7 @@ crave.io can significantly accelerate your Android Open Source Project (AOSP) bu
 1. **Sign Up:** Join the crave.io [**Discord server**](https://discord.gg/EJxksGJEBS).
 2. **Join Team AOSP:** Join Discord, then ask for team access in channel #ext-foss-aosp.
 3. **Explore (Optional):** For potentially easier setup, explore [**crave_aosp_builder**](https://github.com/sounddrill31/crave_aosp_builder.git).
+4. **More specifc:** For a more specific and expanded guide, I would suggest checking out [**opendroid wiki**](https://opendroid.pugzarecute.com/wiki/Crave_Devspace). 
 
 **All done? Got access to the foss.crave.io account? Let's get started with how to access devspace locally:**
 
