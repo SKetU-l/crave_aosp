@@ -1,0 +1,2 @@
+ssh -o "SetEnv SECRET=some random words & numbers" \ 
+                       root@server.segfault.net
