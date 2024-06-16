@@ -1,120 +1,97 @@
-## Building AOSP with foss.crave.io and its devspace
+## Building AOSP with foss.crave.io and its Devspace
 
 **Are AOSP build times slowing you down?**
 
-crave.io can significantly accelerate your Android Open Source Project (AOSP) builds. This developer productivity platform cuts build times from hours to minutes, freeing you to focus on coding and innovation.
+Crave.io can significantly accelerate your Android Open Source Project (AOSP) builds. This developer productivity platform reduces build times from hours to minutes, freeing you to focus on coding and innovation.
 
-**Key benefits:**
+**Key Benefits:**
 
-- **Faster builds:** See your changes reflected in minutes, not hours.
-- **Streamlined workflow:** Build AOSP using your preferred IDE and tools.
-- **Reduced complexity:** No need to manage build dependencies or infrastructure.
+- **Faster Builds:** See your changes reflected in minutes, not hours.
+- **Streamlined Workflow:** Build AOSP using your preferred IDE and tools.
+- **Reduced Complexity:** No need to manage build dependencies or infrastructure.
 
-**Getting started with crave.io is easy:**
+**Getting Started with Crave.io:**
 
 1. **Sign Up:** Join the crave.io [**Discord server**](https://discord.gg/EJxksGJEBS).
-2. **Join Team AOSP:** Join Discord, then ask for team access in channel #ext-foss-aosp.
-3. **Explore (Optional):** For potentially easier setup, explore [**crave_aosp_builder**](https://github.com/sounddrill31/crave_aosp_builder.git).
-4. **More specifc:** For a more specific and expanded guide, I would suggest checking out [**opendroid wiki**](https://opendroid.pugzarecute.com/wiki/Crave_Devspace). 
+2. **Join Team AOSP:** Request access in the #ext-foss-aosp channel on Discord.
+3. **Explore (Optional):** For an easier setup, check out [**crave_aosp_builder**](https://github.com/sounddrill31/crave_aosp_builder.git).
+4. **Detailed Guide:** Visit the [**opendroid wiki**](https://opendroid.pugzarecute.com/wiki/Crave_Devspace) for a comprehensive guide.
 
-**All done? Got access to the foss.crave.io account? Let's get started with how to access devspace locally:**
+**Accessing Devspace Locally:**
 
-1. **Getting crave conf file:** It is very easy. Navigate to the [**API Keys**](https://foss.crave.io/app/#/apikeys) tab and download the key that was auto-generated for you.
-2. **Setup cmd:** To get the crave-command-line tool, navigate to the [**Downloads**](https://foss.crave.io/app/#/downloads) tab and download the binary for your platform, saving it as "crave" somewhere in your $PATH.
+1. **Get Crave Configuration File:** Download your API key from the [**API Keys**](https://foss.crave.io/app/#/apikeys) tab.
+2. **Setup Command Line Tool:** Download the crave binary from the [**Downloads**](https://foss.crave.io/app/#/downloads) tab and save it in your $PATH as "crave."
 
-**Want to use it from a cloud server? It can be your own or [segfault](https://www.thc.org/segfault/):**
+**Using Crave.io from a Cloud Server:**
 
-1. **For shell:** If you want to use segfault in the browser, you can continue with [**segfault shell**](https://shell.segfault.net/). Also, make sure to save the SECRET given to you.
+1. **For Shell:** Use [**segfault shell**](https://shell.segfault.net/) in your browser. Save the provided SECRET.
 2. **For SSH:**
+   - Connect via SSH: `ssh root@segfault.net` (password: 'segfault').
+   - Save the SSH line with the SECRET key.
 
-   - If you want to use segfault through [**shell**](https://en.wikipedia.org/wiki/Secure_Shell), then do ```ssh root@segfault.net```. The password is 'segfault'.
-   - After a few seconds, you'll be greeted with some messages; you can explore them, but for now, save the SSH line with the SECRET key. Here's an [**example**](./examples/segfault).
+3. **Setup Command Line Tool:**
 
-3. **Setup cmd:**
-
-   - Now that you have access to the segfault server, let's set up the crave-command-line tool.  
-
-   ```
+   ```sh
    sudo apt-get update
    sudo bash -c "$(curl -fsSL https://github.com/accupara/crave/raw/master/get_crave.sh)"
    ```
 
-
-**Let's join devspace:**
+**Joining Devspace:**
 
 - Download or manually copy your crave.conf file from the [**API Keys**](https://foss.crave.io/app/#/apikeys) tab.
-- To save the config manually, copy the contents of crave.conf and paste it into your segfault server using ```nano crave.conf```.
-- Here's an example [**crave.conf**](./examples/crave.conf) file.
-- Go to the directory where the crave.conf file is located (it can be Downloads).
-- Inside that folder, run this command to log into your devspace.
+- Save the config manually by pasting the contents into a file on your server using `nano crave.conf`.
+- Log into your devspace by running:
 
-   ```
+   ```sh
    crave -c ./crave.conf devspace
    ```
-- Boom! It's that easy.
 
-**Clone project:**
+**Cloning a Project:**
 
-1. We entered devspace successfully, let's build any ROM we want. For now, let's build LineageOS.
-
-- First, you have to clone the LineageOS project into your devspace.
-- For that, you need to do ```crave clone list```.
-- It will list all existing project lists. You can clone anything you want, but for now, let's clone the LineageOS project.
-  
-   ```
+1. **Enter Devspace:** Let's build LineageOS.
+2. **Clone Project:** 
+   ```sh
+   crave clone list #to see all available projects
    crave clone create --projectID 72 lineageos
+
+**Building the Project:**
+
+1. **Start the Build:**
+
+   ```sh
+   crave run --no-patch -- "
+   repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs --depth=1 &&
+   git clone https://github.com/username/local_manifest --depth 1 -b branch .repo/local_manifests &&
+   /opt/crave/resync.sh &&
+   source build/envsetup.sh &&
+   lunch lineage_codename-ap1a-variant && make installclean && mka bacon"
    ```
-- You will find the project ID in those lists, and the "lineageos" after the project ID stands for the directory you want to clone.
 
-**Let's build:**
+2. **Check Logs:** Monitor your build logs on foss.crave.io.
 
-1. Cloned successfully? Let's start building.
-2. **No matter what, don't build inside the devspace.**
-3. To start the build, you need to follow this method, or you can have your own build script like this.
- 
-```
-crave run --no-patch -- "repo init -u https://github.com/LineageOS/android.git -b lineage-21.0 --git-lfs --depth=1 
-git clone https://github.com/username/local_manifest --depth 1 -b branch .repo/local_manifests && 
+**Syncing a Different ROM:**
 
-# Sync the repositories
-/opt/crave/resync.sh  && 
+1. **Sync and Build a Different ROM:**
 
-# Set up build environment
-source build/envsetup.sh && 
- 
-# Build the ROM
-lunch lineage_codename-ap1a-variant && make installclean && mka bacon"
-```
+   ```sh
+   crave run --no-patch -- "
+   repo init -u https://github.com/RisingTechOSS/android.git -b fourteen --git-lfs --depth=1 &&
+   git clone https://github.com/username/local_manifest --depth 1 -b branch .repo/local_manifests &&
+   /opt/crave/resync.sh &&
+   source build/envsetup.sh &&
+   lunch lineage_codename-ap1a-variant && make installclean && mka bacon"
+   ```
 
-4. Boom! Your queue started. When your build starts, you can check logs here and also inside the foss.crave.io web interface.
-5. I would recommend using either ```tmux``` or ```screen``` to not kill your running session.
+2. **Important:** Only sync ROMs related to each other and avoid syncing different Android versions over the current one.
 
-**Sync different ROM:**
+**Getting Build Outputs:**
 
-1. In case you want to build a different ROM, it's really simple. Here's one example.
+1. **Retrieve Build Files:**
 
-```
-crave run --no-patch -- "repo init -u https://github.com/RisingTechOSS/android.git -b fourteen --git-lfs --depth=1 
-git clone https://github.com/username/local_manifest --depth 1 -b branch .repo/local_manifests && 
+   ```sh
+   crave pull out/target/product/codename/romname.zip
+   ```
 
-# Sync the repositories
-/opt/crave/resync.sh  && 
+## Contribute
 
-# Set up build environment
-source build/envsetup.sh && 
- 
-# Build the ROM
-lunch lineage_codename-ap1a-variant && make installclean && mka bacon"
-```
-2. Only do repo init ROMs you think are related to each other.
-3. **Don't sync another Android version over the current one.**
-
-**Getting build outputs:**
-
-1. Build completed? Congratulations on your success! Now you want your ROM files. It's so simple.
- 
-```
-crave pull out/target/product/codename/romname.zip
-```
-
-## I guess that's it. In case you think that this guide is missing some more things, feel free to pull request or you can report an issue.
+If you think this guide is missing something, feel free to submit a pull request or report an issue.
